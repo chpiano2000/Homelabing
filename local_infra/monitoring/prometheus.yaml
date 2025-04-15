@@ -1,0 +1,6 @@
+prometheus:
+  enabled: true
+  ingress:
+    enabled: true
+    hosts:
+      - prometheus.home-k8s.lab

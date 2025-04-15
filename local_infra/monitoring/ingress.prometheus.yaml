@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    meta.helm.sh/release-name: prometheus
+    meta.helm.sh/release-namespace: monitor
+  labels:
+    app.kubernetes.io/instance: prometheus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: prometheus
+  name: prometheus
+  namespace: monitor
+spec:
+  rules:
+    - host: prometheus.home-k8s.lab
+      http:
+        paths:
+          - backend:
+              service:
+                name: prometheus-server
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix

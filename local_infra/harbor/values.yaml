@@ -1,0 +1,23 @@
+expose:
+  type: ingress
+  tls:
+    enable: false
+
+  ingress:
+    hosts:
+      core: registry.home-k8s.lab
+      notary: notary.harbor.domain
+      controller: default
+      kubeVersionOverride: ""
+      className: "nginx"
+    annotations:
+      ingress.kubernetes.io/ssl-redirect: "false"
+      ingress.kubernetes.io/proxy-body-size: "0"
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+      nginx.ingress.kubernetes.io/proxy-body-size: "0"
+      nginx.org/client-max-body-size: "0"
+
+externalURL: https://registry.home-k8s.lab
+
+existingSecretAdminPasswordKey: HARBOR_ADMIN_PASSWORD
+harborAdminPassword: "Harbor12345"

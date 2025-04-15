@@ -1,0 +1,33 @@
+clusterDomain: cluster.local
+config:
+  secret:
+    argocdServerAdminPassword: "Datvo123@#$"
+server:
+  extraArgs:
+    - --insecure
+
+  ingress:
+    enabled: true
+    hostname: cd.home-k8s.lab
+    ingressClassName: "traefik"
+    path: /
+    pathType: ImplementationSpecific
+    tls: false
+    selfSigned: false
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: web
+      traefik.ingress.kubernetes.io/headers.customrequestheaders: X-Forwarded-Proto:https
+      traefik.ingress.kubernetes.io/router.tls: "false"
+
+  ingressGrpc:
+    enabled: true
+    hostname: cd-grpc.home-k8s.lab
+    ingressClassName: "traefik"
+    path: /
+    pathType: ImplementationSpecific
+    secrets: []
+    tls: false
+    selfSigned: false
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: web
+      traefik.ingress.kubernetes.io/router.tls: "false"

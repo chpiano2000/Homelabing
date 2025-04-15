@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-api
+  labels:
+    app: go_api
+  namespace: dev
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: go_api
+  template:
+    metadata:
+      labels:
+        app: go_api
+      namespace: dev
+    spec:
+      containers:
+        - name: go-api
+          image: vochidat0/simple_go_api:v1.0.0
+          ports:
+            - containerPort: 8080
