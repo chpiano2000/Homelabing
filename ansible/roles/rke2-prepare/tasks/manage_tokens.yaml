@@ -1,0 +1,23 @@
+- name: Stat original permission on token dir
+  ansible.builtin.stat:
+    path: /var/lib/rancher/rke2/server
+  register: token_dir_perm
+
+- name: Temporarily relax token directory access
+  ansible.builtin.file:
+    path: /var/lib/rancher/rke2/server
+    mode: "g+rx,o+rx"
+
+- name: Read token from RKE2 server
+  ansible.builtin.slurp:
+    src: /var/lib/rancher/rke2/server/token
+  register: rke2_token
+
+- name: Set fact for token
+  ansible.builtin.set_fact:
+    token: "{{ rke2_token.content | b64decode | regex_replace('\n', '') }}"
+
+- name: Restore original permissions
+  ansible.builtin.file:
+    path: /var/lib/rancher/rke2/server
+    mode: "{{ token_dir_perm.stat.mode }}"

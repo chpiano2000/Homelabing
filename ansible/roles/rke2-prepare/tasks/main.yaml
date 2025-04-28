@@ -1,0 +1,18 @@
+- name: Prepare directories and detect role
+  import_tasks: pre_config.yaml
+
+- name: Setup RKE2 Server (if applicable)
+  import_tasks: server_setup.yaml
+  when: in_server
+
+- name: Setup RKE2 Agent (if applicable)
+  import_tasks: agent_setup.yaml
+  when: in_agents
+
+- name: Manage token and node registration (on first server)
+  import_tasks: manage_tokens.yaml
+  when: in_server
+
+- name: Set up kubectl and kubeconfig for user
+  import_tasks: kubectl_config.yaml
+  when: in_server

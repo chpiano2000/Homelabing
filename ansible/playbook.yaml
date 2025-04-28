@@ -1,0 +1,29 @@
+# bootstraps first server and copies configs for others/agents
+- name: Prepare all nodes
+  hosts: rke2
+  gather_facts: false # fact gathering is slow and not needed for any of our tasks
+  become: true
+  roles:
+    - prepare-nodes
+    - rke2-download
+
+# if HA
+# - name: Deploy Kube VIP
+#   hosts: servers
+#   gather_facts: true
+#   roles:
+#     - kube-vip
+
+# bootstraps the first server, copies configs to nodes, saves token to use later
+- name: Prepare RKE2 on Servers and Agents
+  hosts: servers,agents
+  gather_facts: true
+  roles:
+    - rke2-prepare
+
+# Adds agents to the cluster
+- name: Add additional RKE2 Agents
+  hosts: agents
+  gather_facts: true
+  roles:
+    - add-agent

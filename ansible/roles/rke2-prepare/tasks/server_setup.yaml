@@ -1,0 +1,28 @@
+- name: Deploy RKE2 server configuration
+  ansible.builtin.template:
+    src: server-config.j2
+    dest: /etc/rancher/rke2/config.yaml
+    mode: "0644"
+
+- name: Create RKE2 server systemd service
+  ansible.builtin.template:
+    src: server.service.j2
+    dest: /etc/systemd/system/rke2-server.service
+    mode: "0644"
+
+- name: Start and enable rke2-server
+  ansible.builtin.systemd:
+    name: rke2-server
+    enabled: true
+    state: restarted
+    daemon_reload: true
+
+- name: Wait for node-token
+  ansible.builtin.wait_for:
+    path: /var/lib/rancher/rke2/server/node-token
+    timeout: 60
+
+- name: Wait for kubectl binary
+  ansible.builtin.wait_for:
+    path: /var/lib/rancher/rke2/bin/kubectl
+    timeout: 30

@@ -16,5 +16,16 @@
 # Go workspace file
 go.work
 
+# Ansible
+*.retry
+
+# Vagrant
+.vagrant/
+
+# Vagrant Patch
+*.box
+
+rke2.yaml
+master-disk.vdi
 .env
 kubebuilder
