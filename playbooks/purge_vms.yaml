@@ -1,0 +1,8 @@
+---
+- name: Purge
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Delete VMs
+      ansible.builtin.include_role:
+        name: homelab.vms.purge_vms

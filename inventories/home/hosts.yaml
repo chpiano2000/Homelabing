@@ -1,0 +1,19 @@
+all:
+  vars:
+    # Cluster-wide settings
+    cp_template: "ControlPlane"
+    dp_template: "WorkerNode"
+  children:
+    masters:
+      hosts:
+        master:
+          ansible_host: 10.0.0.51
+          mac_address: "BC:24:11:11:11:01"
+    agents:
+      hosts:
+        agent1:
+          ansible_host: 10.0.0.52
+          mac_address: "BC:24:11:11:11:02"
+        agent2:
+          ansible_host: 10.0.0.53
+          mac_address: "BC:24:11:11:11:03"

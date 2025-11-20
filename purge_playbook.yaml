@@ -1,0 +1,6 @@
+---
+- name: Purge
+  hosts: localhost
+  gather_facts: false
+  roles:
+    - purge

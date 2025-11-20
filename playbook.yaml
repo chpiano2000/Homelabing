@@ -1,0 +1,12 @@
+---
+- name: Pre-flight
+  hosts: localhost
+  gather_facts: false
+  roles:
+    - pre-flight
+
+# - name: Install Talos
+#   hosts: localhost
+#   gather_facts: true
+#   roles:
+#     - talos

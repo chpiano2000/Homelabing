@@ -1,0 +1,6 @@
+pve_api_host: ""
+pve_api_port: ""
+pve_api_path: ""
+pve_api_node: ""
+pve_api_user: ""
+pve_api_password: ""

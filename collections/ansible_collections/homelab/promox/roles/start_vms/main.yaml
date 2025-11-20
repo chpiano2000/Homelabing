@@ -1,0 +1,14 @@
+---
+- name: Start VM that are not running
+  community.proxmox.proxmox_kvm:
+    api_user: "{{ pve_api_user }}"
+    api_password: "{{ pve_api_password }}"
+    api_host: "{{ pve_api_host }}"
+    validate_certs: false
+    node: "{{ pve_api_node }}"
+    name: "{{ inventory_hostname }}"
+    state: started
+
+- name: Wait for another 10 seconds
+  ansible.builtin.pause:
+    seconds: 10

@@ -1,0 +1,15 @@
+os: "linux"
+arch: "amd64"
+
+talos_version: v1.11.0
+talosctl_version: v1.11.3
+
+config_directory: "/home/{{ ansible_user }}/.talos"
+config_file: "/home/{{ ansible_user }}/.talos/talosconfig"
+
+ansible_user: ansible
+ansible_become: true
+ansible_become_method: sudo
+
+cp_template: "ControlPlane"
+dp_template: "WorkerNode"

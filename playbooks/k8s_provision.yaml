@@ -1,0 +1,26 @@
+---
+- name: Provision Infrastructure
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Check for available VMs for the cluster
+      ansible.builtin.include_role:
+        name: homelab.vms.check_available_vms
+
+    - name: Authenticate to Promox
+      ansible.builtin.include_role:
+        name: homelab.vms.promox_auth
+
+    - name: Provision VMs
+      ansible.builtin.include_role:
+        name: homelab.vms.provision_vms
+
+    - name: Setup VMs
+      ansible.builtin.include_role:
+        name: homelab.vms.setup_mac
+
+    - name: Start VMs
+      ansible.builtin.include_role:
+        name: homelab.vms.start_vms
