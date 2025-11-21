@@ -1,0 +1,63 @@
+---
+- name: Ensure Talos config directory exists
+  ansible.builtin.file:
+    path: "{{ config_directory }}"
+    state: directory
+    mode: '0755'
+
+- name: Generate Talos Configuration
+  ansible.builtin.command:
+    cmd: >
+      talosctl gen config {{ cluster_name }} https://{{ hostvars[groups['masters'][0]].ansible_host }}:6443
+      --output-dir {{ config_directory }}
+      --install-image {{ talos_install_image }}
+      --config-patch @{{ role_path }}/files/cluster.yaml
+      --config-patch-worker @{{ role_path }}/files/worker.yaml
+      --force
+  delegate_to: localhost
+
+- name: Apply Control Plane Configuration
+  ansible.builtin.command:
+    cmd: >
+      talosctl apply-config --insecure 
+      --nodes {{ hostvars[item].ansible_host }}
+      --file {{ config_directory }}/controlplane.yaml
+  loop: "{{ groups['masters'] }}"
+  delegate_to: localhost
+
+- name: Configure local talosctl endpoint
+  ansible.builtin.command:
+    cmd: >
+      talosctl config endpoint {{ hostvars[groups['masters'][0]].ansible_host }}
+      --talosconfig {{ config_file }}
+  delegate_to: localhost
+
+- name: Configure local talosctl node
+  ansible.builtin.command:
+    cmd: >
+      talosctl config node {{ hostvars[groups['masters'][0]].ansible_host }}
+      --talosconfig {{ config_file }}
+  delegate_to: localhost
+
+- name: Bootstrap the Cluster
+  ansible.builtin.command:
+    cmd: "talosctl bootstrap --talosconfig {{ config_file }}"
+  delegate_to: localhost
+  register: bootstrap_result
+  retries: 20
+  delay: 10
+  until: bootstrap_result.rc == 0 or "already bootstrapped" in bootstrap_result.stderr
+  failed_when: 
+    - bootstrap_result.rc != 0
+    - "'already bootstrapped' not in bootstrap_result.stderr"
+
+- name: Retrieve Kubeconfig
+  ansible.builtin.command:
+    cmd: "talosctl kubeconfig {{ config_directory }} --talosconfig {{ config_file }}"
+  delegate_to: localhost
+
+# - name: Merge Kubeconfig to default location
+#   ansible.builtin.copy:
+#     src: "{{ config_directory }}/kubeconfig"
+#     dest: ./
+#     mode: '0600'

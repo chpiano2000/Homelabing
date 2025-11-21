@@ -4,4 +4,3 @@ collections:
   - name: community.general
   - name: kubernetes.core
   - name: community.proxmox
-
