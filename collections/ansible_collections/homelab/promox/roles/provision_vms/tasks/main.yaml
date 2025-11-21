@@ -1,4 +1,4 @@
-- name: Create VM for hosts not in Proxmox
+- name: Create VMs
   community.proxmox.proxmox_kvm:
     node: "{{ pve_api_node }}"
     api_user: "{{ pve_api_user }}"
@@ -8,8 +8,9 @@
     full: true
     clone: "{{ cp_template if 'masters' in group_names else dp_template }}"
     name: "{{ inventory_hostname }}"
-    timeout: 300
+    state: present
+    timeout: 100
 
-- name: Wait 10 Seconds
+- name: Wait for another 10 seconds
   ansible.builtin.pause:
     seconds: 10

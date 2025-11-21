@@ -1,26 +1,34 @@
 ---
 - name: Provision Infrastructure
-  hosts: localhost
+  hosts: all
   connection: local
   gather_facts: false
+  serial: 1 # don't know why running in parallel costs deadlock
 
   tasks:
-    - name: Check for available VMs for the cluster
-      ansible.builtin.include_role:
-        name: homelab.vms.check_available_vms
-
     - name: Authenticate to Promox
       ansible.builtin.include_role:
-        name: homelab.vms.promox_auth
+        name: homelab.promox.promox_auth
 
     - name: Provision VMs
       ansible.builtin.include_role:
-        name: homelab.vms.provision_vms
+        name: homelab.promox.provision_vms
+
+    - name: Get VM Ids
+      ansible.builtin.include_role:
+        name: homelab.promox.get_vms
+      run_once: true
 
     - name: Setup VMs
       ansible.builtin.include_role:
-        name: homelab.vms.setup_mac
+        name: homelab.promox.setup_mac
 
     - name: Start VMs
       ansible.builtin.include_role:
-        name: homelab.vms.start_vms
+        name: homelab.promox.start_vms
+
+- name: Install Talos
+  hosts: all
+  connection: local
+  gather_facts: false
+  tasks:

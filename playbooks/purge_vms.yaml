@@ -5,4 +5,4 @@
   tasks:
     - name: Delete VMs
       ansible.builtin.include_role:
-        name: homelab.vms.purge_vms
+        name: homelab.promox.purge_vms

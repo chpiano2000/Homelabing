@@ -1,0 +1,8 @@
+- name: Get VM List
+  ansible.builtin.uri:
+    url: "https://{{ pve_api_host }}:{{ pve_api_port }}/{{ pve_api_path }}/nodes/{{ pve_api_node }}/qemu"
+    method: GET
+    headers:
+      Cookie: "PVEAuthCookie={{ proxmox_ticket }}"
+    validate_certs: false
+  register: current_vm_info

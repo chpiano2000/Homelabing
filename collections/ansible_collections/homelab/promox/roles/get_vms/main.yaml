@@ -1,9 +1,0 @@
-- name: Get VM list
-  uri:
-    url: "https://{{ pve_api_host }}:8006/api2/json/nodes/{{ pve_api_node }}/qemu"
-    method: GET
-    headers:
-      Cookie: "PVEAuthCookie={{ proxmox_ticket }}"
-    validate_certs: no
-  register: vm_list
-  delegate_to: localhost
