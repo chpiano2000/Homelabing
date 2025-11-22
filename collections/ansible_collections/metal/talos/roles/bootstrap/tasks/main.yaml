@@ -13,6 +13,7 @@
       --install-image {{ talos_install_image }}
       --config-patch @{{ role_path }}/files/cluster.yaml
       --config-patch-worker @{{ role_path }}/files/worker.yaml
+      --config-patch-control-plane @{{ role_path }}/files/controlplane.yaml
       --force
   delegate_to: localhost
 
