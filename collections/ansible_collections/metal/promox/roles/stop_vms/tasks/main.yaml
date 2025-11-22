@@ -1,0 +1,16 @@
+---
+- name: Set VMID fact
+  ansible.builtin.set_fact:
+    current_vmid: '{{ (current_vm_info.json.data | selectattr("name", "equalto", inventory_hostname) | first).vmid }}'
+  when: current_vm_info.json.data | length > 0
+
+- name: Remove the vm
+  community.proxmox.proxmox_kvm:
+    api_user: "{{ pve_api_user }}"
+    api_password: "{{ pve_api_password }}"
+    api_host: "{{ pve_api_host }}"
+    validate_certs: false
+    node: "{{ pve_api_node }}"
+    vmid: "{{ current_vmid }}"
+    state: absent
+  when: current_vmid is defined and current_vmid is not none

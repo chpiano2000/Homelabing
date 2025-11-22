@@ -2,10 +2,18 @@ os: "linux"
 arch: "amd64"
 
 talos_version: v1.11.0
-talosctl_version: v1.11.3
+talosctl_version: v1.11.5
+cluster_name: "dax-cluster"
+talos_image_hash: 613e1592b2da41ae5e265e8789429f22e121aab91cb4deb6bc3c0b6262961245
+talos_install_image: "factory.talos.dev/metal-installer/{{ talos_image_hash }}:{{ talosctl_version }}"
 
-config_directory: "/home/{{ ansible_user }}/.talos"
-config_file: "/home/{{ ansible_user }}/.talos/talosconfig"
+home_dir: "/home/{{ ansible_user }}"
+kube_dir: "/home/{{ home_dir }}/.kube"
+talos_config_dir: "{{ home_dir }}/.talos"
+talos_config_file: "{{ talos_config_dir }}/talosconfig"
+
+cilium_gatway_api_version: v1.2.0
+cilium_crd_link_prefix: https://raw.githubusercontent.com/kubernetes-sigs/gateway-api
 
 ansible_user: ansible
 ansible_become: true

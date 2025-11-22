@@ -1,0 +1,20 @@
+[project]
+name = "homelabing"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "vochidat0",email = "dat.usth2000@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "ansible (>=13.0.0,<14.0.0)",
+    "proxmoxer (>=2.2.0,<3.0.0)",
+    "requests (>=2.32.5,<3.0.0)",
+    "kubernetes (>=34.1.0,<35.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

@@ -8,38 +8,40 @@
   tasks:
     - name: Authenticate to Promox
       ansible.builtin.include_role:
-        name: homelab.promox.promox_auth
+        name: metal.promox.promox_auth
 
     - name: Provision VMs
       ansible.builtin.include_role:
-        name: homelab.promox.provision_vms
+        name: metal.promox.provision_vms
 
     - name: Get VM Ids
       ansible.builtin.include_role:
-        name: homelab.promox.get_vms
-      run_once: true
+        name: metal.promox.get_vms
 
     - name: Setup VMs
       ansible.builtin.include_role:
-        name: homelab.promox.setup_mac
+        name: metal.promox.setup_mac
 
     - name: Start VMs
       ansible.builtin.include_role:
-        name: homelab.promox.start_vms
+        name: metal.promox.start_vms
 
 - name: Install Talos
   hosts: all
   connection: local
   gather_facts: false
-  vars:
-    cluster_name: "dax-cluster"
-    talos_install_image: "factory.talos.dev/installer/613e1592b2da41ae5e265e8789429f22e121aab91cb4deb6bc3c0b6262961245:v1.11.5"
-    config_home: "/home/ansible"
-    config_directory: "/home/ansible/.talos"
-    config_file: "/home/ansible/.talos/talosconfig"
-
   tasks:
     - name: Bootstrap Talos Cluster
       ansible.builtin.include_role:
-        name: homelab.talos.bootstrap
+        name: metal.talos.bootstrap
+      run_once: true
+
+    - name: Install CNI
+      ansible.builtin.include_role:
+        name: metal.talos.cni
+      run_once: true
+
+    - name: Join Agents To Cluster
+      ansible.builtin.include_role:
+        name: metal.talos.agents
       run_once: true

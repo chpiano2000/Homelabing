@@ -2,3 +2,4 @@
 .vscode
 **/vault.yaml
 .venv
+kubeconfig
