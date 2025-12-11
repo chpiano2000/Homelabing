@@ -1,0 +1,52 @@
+# Proxmox Connection Settings
+# Copy this file to terraform.tfvars and update with your actual values
+proxmox_api_url       = "https://your-proxmox-host:8006/api2/json"
+proxmox_user          = "root@pam"  # or your API user like "ansible@pve"
+proxmox_password      = "your-password-here"
+proxmox_tls_insecure  = true  # Set to false if using valid SSL certificates
+proxmox_node          = "pve"  # Your Proxmox node name
+
+# Clone Configuration
+# Set to true to clone from existing templates (faster)
+# Set to false to create VMs from scratch using Talos ISO
+use_clone                    = true
+clone_template_control_plane = "ControlPlane"
+clone_template_worker        = "WorkerNode"
+
+# Storage Configuration
+storage_pool = "local-lvm"  # Your Proxmox storage pool
+
+# Network Configuration
+network_bridge = "vmbr0"
+network_model  = "virtio"
+network_vlan   = -1  # Set to VLAN ID or -1 for no VLAN
+gateway        = "10.0.0.1"
+nameserver     = "8.8.8.8"
+cidr           = "/24"
+
+# Control Plane Configuration (matching current setup)
+control_plane_count      = 1
+control_plane_vmid_start = 800
+control_plane_name_prefix = "master"
+control_plane_cores      = 4
+control_plane_sockets    = 1
+control_plane_memory     = 8192  # MB
+control_plane_disk_size  = "100G"
+control_plane_ip_start   = "10.0.0.51"
+control_plane_mac_start  = "BC:24:11:11:11:01"
+
+# Worker Node Configuration (matching current setup)
+worker_count      = 2
+worker_vmid_start = 810
+worker_name_prefix = "agent"
+worker_cores      = 4
+worker_sockets    = 1
+worker_memory     = 16384  # MB
+worker_disk_size  = "200G"
+worker_ip_start   = "10.0.0.52"
+worker_mac_start  = "BC:24:11:11:11:02"
+
+# VM Options
+onboot        = true
+agent_enabled = true
+vm_description = "Talos Kubernetes Node - Managed by Terraform"
