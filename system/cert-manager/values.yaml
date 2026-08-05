@@ -1,0 +1,9 @@
+acme:
+  email: datvc.work@gmail.com
+
+cert-manager:
+  crds:
+    enabled: true
+    keep: true
+  prometheus:
+    enabled: false
