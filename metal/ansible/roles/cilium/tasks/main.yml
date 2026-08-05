@@ -1,0 +1,71 @@
+- name: Install kubernetes Python client (required by kubernetes.core.k8s* modules)
+  ansible.builtin.dnf:
+    name: python3-kubernetes
+    state: present
+
+- name: Install helm (official installer)
+  ansible.builtin.shell: curl -sfL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+  args:
+    creates: /usr/local/bin/helm
+
+- name: Ensure temporary manifests directory exists
+  ansible.builtin.file:
+    path: "{{ cilium_manifests_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Download Gateway API CRDs
+  ansible.builtin.get_url:
+    url: "{{ item }}"
+    dest: "{{ cilium_manifests_dir }}/gateway_api_{{ item.split('/')[-1].split('.')[-2] }}.yaml"
+    mode: '0664'
+  loop: "{{ gateway_api_crd_urls }}"
+
+- name: Get all the downloaded manifests
+  ansible.builtin.find:
+    paths: "{{ cilium_manifests_dir }}"
+    patterns: "*.yaml"
+  register: gateway_api_manifest_files
+
+- name: Apply Gateway API CRDs
+  kubernetes.core.k8s:
+    kubeconfig: "{{ k3s_kubeconfig_file }}"
+    src: "{{ item.path }}"
+    state: present
+  loop: "{{ gateway_api_manifest_files.files }}"
+
+- name: Add Cilium helm repo
+  kubernetes.core.helm_repository:
+    name: cilium
+    repo_url: "{{ cilium_repo_url }}"
+
+- name: Install Cilium via Helm
+  kubernetes.core.helm:
+    kubeconfig: "{{ k3s_kubeconfig_file }}"
+    name: cilium
+    chart_ref: cilium/cilium
+    chart_version: "{{ cilium_version }}"
+    release_namespace: "{{ cilium_namespace }}"
+    values: "{{ cilium_values }}"
+
+- name: Wait for Cilium CRDs
+  kubernetes.core.k8s_info:
+    kubeconfig: "{{ k3s_kubeconfig_file }}"
+    kind: CustomResourceDefinition
+    name: "{{ item }}"
+  loop:
+    - ciliuml2announcementpolicies.cilium.io
+    - ciliumloadbalancerippools.cilium.io
+  register: crd
+  until: crd.resources | length > 0
+  retries: 5
+  delay: 10
+
+- name: Apply Cilium resources
+  kubernetes.core.k8s:
+    kubeconfig: "{{ k3s_kubeconfig_file }}"
+    template: "{{ item }}"
+    state: present
+  loop:
+    - ciliuml2announcementpolicy.yaml
+    - ciliumloadbalancerippool.yaml

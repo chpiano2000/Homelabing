@@ -1,0 +1,8 @@
+# https://dash.cloudflare.com/profile/api-tokens
+# Create a token with permissions: 
+# - Zone.Zone: Read
+# - Zone.DNS: Edit
+cloudflare_api_token = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+# Optional: override the default kubeconfig path
+# kubeconfig_path = "../metal/ansible/kubeconfig.yaml"

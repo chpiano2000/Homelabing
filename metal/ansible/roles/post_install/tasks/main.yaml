@@ -1,0 +1,70 @@
+---
+- name: Install kubernetes Python client (required by kubernetes.core.k8s* modules)
+  dnf:
+    name: python3-kubernetes
+    state: present
+
+- name: Wait for API server to be reachable
+  shell: /usr/local/bin/k3s kubectl get --raw='/readyz'
+  register: apiserver_ready
+  until: apiserver_ready.rc == 0
+  retries: 30
+  delay: 5
+  changed_when: false
+  environment: "{{ kubeconfig_env }}"
+
+- name: Check if helm is already installed
+  stat:
+    path: /usr/local/bin/helm
+  register: helm_binary
+
+- name: Install helm (official installer)
+  shell: curl -sfL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+  args:
+    creates: /usr/local/bin/helm
+  when: not helm_binary.stat.exists
+
+- name: Install Cilium
+  kubernetes.core.helm:
+    name: cilium
+    chart_ref: cilium
+    chart_repo_url: "{{ cilium_repo_url }}"
+    chart_version: "{{ cilium_version }}"
+    release_namespace: "{{ cilium_namespace }}"
+    kubeconfig: "{{ k3s_kubeconfig_file }}"
+    values: "{{ cilium_values }}"
+
+- name: Wait for Cilium CRDs to be Established
+  kubernetes.core.k8s_info:
+    kind: CustomResourceDefinition
+    name: "{{ item }}"
+    kubeconfig: "{{ k3s_kubeconfig_file }}"
+    wait: true
+    wait_condition:
+      type: Established
+      status: "True"
+    wait_timeout: 120
+  loop: "{{ cilium_crds }}"
+
+- name: Apply Cilium L2 announcement + IP pool
+  kubernetes.core.k8s:
+    template: "{{ item }}"
+    kubeconfig: "{{ k3s_kubeconfig_file }}"
+    state: present
+  loop:
+    - ciliuml2announcementpolicy.yaml
+    - ciliumloadbalancerippool.yaml.j2
+
+- name: Fetch kubeconfig to control node
+  fetch:
+    src: "{{ k3s_kubeconfig_file }}"
+    dest: "{{ playbook_dir }}/kubeconfig"
+    flat: yes
+
+- name: Rewrite server address in fetched kubeconfig
+  delegate_to: localhost
+  become: no
+  replace:
+    path: "{{ playbook_dir }}/kubeconfig"
+    regexp: 'https://127\.0\.0\.1:6443'
+    replace: "https://{{ control_plane_endpoint }}:6443"

@@ -1,8 +1,21 @@
-play:
-	ansible-playbook playbooks/k8s_provision.yaml -i inventories/home/
+.POSIX:
+.PHONY: default all metal external system cert-manager argocd destroy
 
-purge:
-	ansible-playbook playbooks/purge_vms.yaml -i inventories/home/
+KUBECONFIG ?= $(CURDIR)/metal/ansible/kubeconfig.yaml
+export KUBECONFIG
 
-display:
-	echo ${HOME}
+default: all
+
+all: metal external system
+
+metal:
+	make -C metal
+
+system:
+	make -C system 
+
+external:
+	make -C external
+
+destroy:
+	make -C metal destroy

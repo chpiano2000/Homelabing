@@ -1,0 +1,36 @@
+# Proxmox connection
+proxmox_endpoint  = "https://192.168.1.10:8006/"
+proxmox_api_token = "root@pam!terraform=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+proxmox_node      = "promox"           # `hostname` on the PVE box
+
+# Storage
+proxmox_datastore = "local-lvm"
+
+# Cloud-init template to clone (create it once in Proxmox, then reference by VMID)
+template_vm_id = 1000
+
+# Network
+network_bridge         = "vmbr0"
+network_gateway        = "192.168.1.1"
+network_cidr_prefix    = 24
+
+# SSH — same keypair for cloud-init (public) and Ansible (private).
+# ssh_public_key_path defaults to "${ssh_private_key_path}.pub".
+ssh_private_key_path = "~/.ssh/id_ed25519"
+# ssh_public_key_path = "~/.ssh/id_ed25519.pub"
+
+# k3s
+k3s_version            = "v1.30.4+k3s1"
+control_plane_endpoint = "192.168.1.110"  # single master: use the master's IP
+load_balancer_ip_pool  = ["192.168.1.224/27"]
+
+# --- Node inventory (mirrors metal/inventories/prod.yml) ---
+masters = {
+  metal0 = { ip = "192.168.1.110", mac = "BC:24:11:11:11:01", cores = 2, memory = 4096, disk = 100 }
+  metal1 = { ip = "192.168.1.111", mac = "BC:24:11:11:11:02", cores = 2, memory = 4096, disk = 100 }
+  metal2 = { ip = "192.168.1.112", mac = "BC:24:11:11:11:03", cores = 2, memory = 4096, disk = 100 }
+}
+
+workers = {
+  metal3 = { ip = "192.168.1.113", mac = "BC:24:11:11:11:04", cores = 2, memory = 4096, disk = 100 }
+}

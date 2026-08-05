@@ -1,0 +1,24 @@
+[k3s_masters]
+%{ for name, m in masters ~}
+${name} ansible_host=${m.ip} node_ip=${m.ip}${name == first_master ? " k3s_first_master=true" : ""}
+%{ endfor ~}
+
+[k3s_agents]
+%{ for name, w in workers ~}
+${name} ansible_host=${w.ip} node_ip=${w.ip}
+%{ endfor ~}
+
+[k3s_cluster:children]
+k3s_masters
+k3s_agents
+
+[k3s_cluster:vars]
+ansible_user=${ansible_user}
+ansible_ssh_private_key_file=${ssh_private_key_path}
+ansible_python_interpreter=/usr/bin/python3
+ansible_ssh_common_args=-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR
+k3s_token=${k3s_token}
+control_plane_endpoint=${control_plane_endpoint}
+k3s_server_url=https://${control_plane_endpoint}:6443
+first_master=${first_master}
+load_balancer_ip_pool=${jsonencode(load_balancer_ip_pool)}

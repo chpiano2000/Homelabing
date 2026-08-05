@@ -1,0 +1,9 @@
+---
+kubeconfig_env:
+  KUBECONFIG: "{{ k3s_kubeconfig_file }}"
+
+cilium_crds:
+  - ciliuml2announcementpolicies.cilium.io
+  - ciliumloadbalancerippools.cilium.io
+
+k9s_version: v0.32.5

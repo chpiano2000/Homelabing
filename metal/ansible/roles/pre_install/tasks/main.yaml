@@ -1,0 +1,46 @@
+---
+- name: Disable swap
+  command: swapoff -a
+  changed_when: false
+
+- name: Disable swap permanently
+  replace:
+    path: /etc/fstab
+    regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
+    replace: '# \1'
+
+- name: Kernel sysctls for k3s
+  sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    sysctl_set: yes
+    state: present
+    reload: yes
+  loop:
+    - { name: net.ipv4.ip_forward, value: "1" }
+    - { name: fs.inotify.max_queued_events, value: "16384" }
+    - { name: fs.inotify.max_user_instances, value: "8192" }
+    - { name: fs.inotify.max_user_watches, value: "524288" }
+
+- name: Force dnf to use IPv4 (Fedora mirrors advertise IPv6 but VMs lack a v6 route → dnf stalls on TCP timeout)
+  lineinfile:
+    path: /etc/dnf/dnf.conf
+    regexp: '^ip_resolve='
+    line: 'ip_resolve=4'
+    create: yes
+
+- name: Install required packages
+  dnf:
+    name:
+      - jq
+      - iscsi-initiator-utils
+      - nfs-utils
+    state: present
+    allowerasing: yes
+
+- name: Disable firewalld (k3s manages its own iptables rules)
+  systemd:
+    name: firewalld
+    state: stopped
+    enabled: no
+  failed_when: false

@@ -1,0 +1,54 @@
+---
+ansible_user: root
+
+k3s_version: v1.30.4+k3s1
+k3s_config_file: /etc/rancher/k3s/config.yaml
+k3s_token_file: /etc/rancher/node/password
+k3s_data_dir: /var/lib/rancher/k3s
+k3s_kubeconfig_file: /etc/rancher/k3s/k3s.yaml
+
+cilium_repo_url: https://helm.cilium.io/
+cilium_version: 1.16.1
+cilium_namespace: kube-system
+cilium_values:
+  ipam:
+    mode: kubernetes
+  kubeProxyReplacement: true
+  l2announcements:
+    enabled: true
+  externalIPs:
+    enabled: true
+  securityContext:
+    capabilities:
+      ciliumAgent:
+        - CHOWN
+        - KILL
+        - NET_ADMIN
+        - NET_RAW
+        - IPC_LOCK
+        - SYS_ADMIN
+        - SYS_RESOURCE
+        - DAC_OVERRIDE
+        - FOWNER
+        - SETGID
+        - SETUID
+      cleanCiliumState:
+        - NET_ADMIN
+        - SYS_ADMIN
+        - SYS_RESOURCE
+  cgroup:
+    autoMount:
+      enabled: false
+    hostRoot: /sys/fs/cgroup
+  k8sServiceHost: "{{ control_plane_endpoint }}"
+  k8sServicePort: 6443
+  gatewayAPI:
+    enabled: true
+    enableAlpn: true
+    enableAppProtocol: true
+  ingressController:
+    enabled: true
+    loadbalancerMode: dedicated
+
+# control_plane_endpoint, k3s_token, load_balancer_ip_pool
+# are injected by the Terraform-rendered inventory.

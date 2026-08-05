@@ -1,0 +1,14 @@
+all:
+  vars:
+    load_balancer_ip_pool:
+      - 10.0.0.100/27
+metal:
+  children:
+    masters:
+      hosts:
+        metal1: {ansible_host: 10.0.0.51, mac: 'BC:24:11:11:11:01', disk: sda, network_interface: eno1}
+        metal2: {ansible_host: 10.0.0.52, mac: 'BC:24:11:11:11:02', disk: sda, network_interface: eno1}
+    workers:
+      hosts:
+        metal3: {ansible_host: 10.0.0.53, mac: 'BC:24:11:11:11:03', disk: sda, network_interface: eno1}
+
