@@ -1,0 +1,14 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: gateway-internal-only
+  namespace: gateway-system
+spec:
+  endpointSelector:
+    matchLabels:
+      io.cilium.gateway/owning-gateway: shared-gateway
+  ingress:
+    - fromCIDR:
+        - 100.64.0.0/10 # tailscale VPN IP range
+

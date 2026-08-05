@@ -1,0 +1,21 @@
+{{- if .Values.gateway.tls.enabled }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ .Values.gateways.tls.certName }}
+  namespace: {{ .Values.namespace }}
+spec:
+  secretName: {{ .Values.gateways.tls.secretName }}
+  issuerRef:
+    name: prod-issuer
+    kind: ClusterOriginIssuer
+    group: cert-manager.k8s.cloudflare.com
+  dnsNames:
+    - {{ .Values.domain | quote}}
+    - {{ printf "*.%s" .Values.domain | quote }}
+  duration: 2160h # 90 days
+  renewBefore: 720h # 30 days before expiry
+  issuer:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+{{- end}}
