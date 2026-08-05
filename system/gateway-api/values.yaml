@@ -1,0 +1,27 @@
+domain: daxvo.tech
+namespace: gateway-system
+
+gateway:
+  name: shared-gateway
+  gatewayClassName: cilium
+  tls:
+    enabled: false
+    secretName: letsencrypt-prod
+    certName: shared-gateway-tls
+  allowedRouteNamespaces:   # ReferenceGrant
+    - apps
+    - argocd
+
+gatewayapi:
+  name: gateway-internal-only
+
+networkPolicy:
+  name: gateway-wireguard-only
+  allowedCIDRs:
+    - 10.10.0.0/10
+
+certificate:
+  issuer:
+    name: prod-issuer
+    kind: ClusterOriginIssuer
+    group: cert-manager.k8s.cloudflare.com
