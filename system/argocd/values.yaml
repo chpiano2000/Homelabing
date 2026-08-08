@@ -15,6 +15,32 @@ argo-cd:
       enabled: true
       serviceMonitor:
         enabled: true
+    httproute:
+      enabled: true
+      parentRefs:
+        - name: shared-gateway
+          namespace: gateway-system
+      hostnames:
+        - argocd.daxvo.tech
+      rules:
+        - matches:
+            - path:
+                type: PathPrefix
+                value: /
+              headers:
+                - type: Exact
+                  name: Content-Type
+                  value: application/grpc-web+proto
+          backendRefs:
+            - name: argocd-server-grpc
+              port: 80
+        - matches:
+            - path:
+                type: PathPrefix
+                value: /
+          backendRefs:
+            - name: argocd-server
+              port: 80
   dex:
     enabled: false
   controller:
