@@ -25,17 +25,6 @@ argo-cd:
         - argocd.daxvo.tech
       rules:
         - matches:
-          - path:
-              type: PathPrefix
-              value: /
-            headers:
-              - type: Exact
-                name: Content-Type
-                value: application/grpc-web+proto
-          backendRefs:
-            - name: argocd-server-grpc
-              port: 80
-        - matches:
             - path:
                 type: PathPrefix
                 value: /
@@ -44,21 +33,6 @@ argo-cd:
               port: 80
   dex:
     enabled: false
-  extraObjects:
-    - apiVersion: v1
-      kind: Service
-      metadata:
-        name: argocd-server-grpc
-        namespace: argocd
-      spec:
-        ports:
-          - protocol: TCP
-            appProtocol: kubernetes.io/h2c
-            port: 80
-            targetPort: 8080
-        selector:
-          app.kubernetes.io/instance: argocd
-          app.kubernetes.io/name: argocd-server
   controller:
     metrics: *metrics
   repoServer:
