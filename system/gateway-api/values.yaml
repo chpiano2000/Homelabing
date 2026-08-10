@@ -5,7 +5,7 @@ gateway:
   name: shared-gateway
   gatewayClassName: cilium
   tls:
-    enabled: false
+    enabled: true
     secretName: letsencrypt-prod
     certName: shared-gateway-tls
   allowedRouteNamespaces:   # ReferenceGrant

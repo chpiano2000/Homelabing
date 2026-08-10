@@ -21,6 +21,9 @@ argo-cd:
         - name: shared-gateway
           namespace: gateway-system
           sectionName: http
+        - name: shared-gateway
+          namespace: gateway-system
+          sectionName: https
       hostnames:
         - argocd.daxvo.tech
       rules:
