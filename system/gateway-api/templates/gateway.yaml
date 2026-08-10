@@ -22,7 +22,6 @@ spec:
         certificateRefs:
           - kind: Secret
             name: {{ .Values.gateway.tls.secretName }}
-            namespace: {{ .Values.gateway.namespace }}
       allowedRoutes:
         namespaces:
           from: All
