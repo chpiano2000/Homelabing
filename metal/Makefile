@@ -31,6 +31,9 @@ cluster: install_k3s
 install_k3s:
 	$(ANSIBLE) -i $(ANS_DIR)/inventory.ini $(ANS_DIR)/playbook.yaml -v
 
+install_cilium:
+	$(ANSIBLE) -i $(ANS_DIR)/inventory.ini $(ANS_DIR)/playbook.yaml --tags cilium -v
+
 syntax_check:
 	$(ANSIBLE) -i $(ANS_DIR)/inventory.ini $(ANS_DIR)/playbook.yaml --syntax-check
 

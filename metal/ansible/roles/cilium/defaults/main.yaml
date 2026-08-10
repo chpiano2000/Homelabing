@@ -1,21 +1,26 @@
 cilium_repo_url: https://helm.cilium.io/
-cilium_version: 1.16.1
+cilium_version: 1.20.0
 cilium_namespace: kube-system
 
 cilium_manifests_dir: /tmp/cilium-manifests
 
-gateway_api_version: v1.1.0
+gateway_api_version: v1.6.1
 gateway_api_crd_urls:
+  - "https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/{{ gateway_api_version }}/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml"
   - "https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/{{ gateway_api_version }}/config/crd/standard/gateway.networking.k8s.io_gateways.yaml"
   - "https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/{{ gateway_api_version }}/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml"
   - "https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/{{ gateway_api_version }}/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml"
   - "https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/{{ gateway_api_version }}/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml"
-  - "https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/{{ gateway_api_version }}/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml"
+  - "https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/{{ gateway_api_version }}/config/crd/standard/gateway.networking.k8s.io_backendtlspolicies.yaml"
+  - "https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/{{ gateway_api_version }}/config/crd/standard/gateway.networking.k8s.io_tlsroutes.yaml"
 
 cilium_values:
   ipam:
     mode: kubernetes
   kubeProxyReplacement: true
+  bpf:
+    masquerade: true
+  enableIPv4Masquerade: true
   l2announcements:
     enabled: true
   externalIPs:

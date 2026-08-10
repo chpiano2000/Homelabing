@@ -6,7 +6,7 @@ spec:
   nodeSelector:
     matchLabels: {}
   interfaces:
-    - ens\d{2}
-    - eth\d{2}
+    - ens[0-9]+
+    - eth[0-9]+
   externalIPs: true
   loadBalancerIPs: true

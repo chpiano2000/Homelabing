@@ -1,48 +1,27 @@
 ---
-# - name: Verify all hosts are reachable over SSH
-#   hosts: k3s_cluster
-#   gather_facts: no
-#   tasks:
-#     - name: Wait for SSH port 22 to be open
-#       wait_for:
-#         host: "{{ ansible_host }}"
-#         port: 22
-#         state: started
-#         timeout: 300
-#         delay: 5
-#         connect_timeout: 10
-#       delegate_to: localhost
-#       become: no
-#
-#     - name: Test SSH connection
-#       wait_for_connection:
-#         timeout: 120
-#
-#     - name: Ping
-#       ping:
+- name: Preinstall
+  hosts: k3s_cluster
+  roles:
+    - pre_install
 
-# - name: Preinstall
-#   hosts: k3s_cluster
-#   roles:
-#     - pre_install
-
-# - name: Create k3s server
-#   hosts: k3s_masters
-#   roles:
-#     - k3s_server
-
-# - name: Create k3s agents
-#   hosts: k3s_agents
-#   roles:
-#     - k3s_agent
-
-# - name: Create k3s agents
-#   hosts: k3s_cluster
-#   roles:
-#     - automatic_upgrade
+- name: Create k3s server
+  hosts: k3s_masters
+  roles:
+    - k3s_server
 
 - name: Create k3s agents
+  hosts: k3s_agents
+  roles:
+    - k3s_agent
+
+- name: Create k3s agents
+  hosts: k3s_cluster
+  roles:
+    - automatic_upgrade
+
+- name: Apply cilium cni
   hosts: k3s_masters
   run_once: true
+  tags: cilium
   roles:
     - cilium
