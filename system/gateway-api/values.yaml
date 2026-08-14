@@ -11,6 +11,7 @@ gateway:
   allowedRouteNamespaces:   # ReferenceGrant
     - apps
     - argocd
+    - homepage
 
 gatewayapi:
   name: gateway-internal-only

@@ -1,0 +1,85 @@
+app-template:
+  controllers:
+    main:
+      containers:
+        main:
+          image:
+            repository: ghcr.io/gethomepage/homepage
+            tag: v1.13.2
+  service:
+    main:
+      ports:
+        http:
+          port: 3000
+          protocol: HTTP
+  route:
+    main:
+      enabled: true
+      hostnames:
+        - home.daxvo.tech
+      parentRefs:
+        - name: shared-gateway
+          namespace: gateway-system
+          sectionName: http
+        - name: shared-gateway
+          namespace: gateway-system
+          sectionName: https
+      rules:
+        - matches:
+            - path:
+                type: PathPrefix
+                value: /
+          backendRefs:
+            - name: main
+              port: 3000
+  persistence:
+    config:
+      enabled: true
+      type: configMap
+      name: homepage-config
+      globalMounts:
+        - path: /app/config/settings.yaml
+          subPath: settings.yaml
+        - path: /app/config/widgets.yaml
+          subPath: widgets.yaml
+        - path: /app/config/services.yaml
+          subPath: services.yaml
+        - path: /app/config/bookmarks.yaml
+          subPath: bookmarks.yaml
+  configMaps:
+    config:
+      enabled: true
+      data:
+        settings.yaml: |
+          background: https://images.unsplash.com/photo-1627110466624-436b91b5d20b?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dGFzbWFuaWF8ZW58MHx8MHx8fDA%3D
+          cardBlur: md
+          theme: light
+          headerStyle: boxed
+          hideVersion: true
+        widgets.yaml: |
+          - search:
+              provider: google
+              target: _blank
+        services.yaml: |
+          - Development:
+            - ArgoCD:
+                href: https://argocd.datvo.tech
+                description: Continuous deployment
+                icon: argocd.svg
+        bookmarks.yaml: |
+          - Homelab:
+            - Repository:
+              - href: https://github.com/chpiano2000/Homelabing
+                icon: github.svg
+          - Managed services:
+            - Cloudflare:
+              - href: https://dash.cloudflare.com
+                icon: cloudflare.svg
+          - Infrastructure:
+            - Proxmox:
+              - href: https://10.0.0.50:8006
+                icon: proxmox.svg
+            - Oracle Cloud:
+              - href: https://cloud.oracle.com
+                icon: oracle-cloud.svg
+
