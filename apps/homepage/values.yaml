@@ -53,11 +53,15 @@ app-template:
       enabled: true
       data:
         settings.yaml: |
-          background: https://images.unsplash.com/photo-1627110466624-436b91b5d20b?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dGFzbWFuaWF8ZW58MHx8MHx8fDA%3D
-          cardBlur: md
+          title: Homelabing
+          background: 
+            image: https://images.unsplash.com/photo-1627110466624-436b91b5d20b?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dGFzbWFuaWF8ZW58MHx8MHx8fDA%3D
+            blur: sm
+          cardBlur: sx
           theme: light
           headerStyle: boxed
           hideVersion: true
+          color: yellow
         widgets.yaml: |
           - search:
               provider: google
