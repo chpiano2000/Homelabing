@@ -1,15 +1,19 @@
+{{- range .Values.gateways }}
+{{- if not .public }}
+---
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: {{ .Values.networkPolicy.name }}
-  namespace: {{ .Values.namespace }}
+  name: {{ .name }}-internal-only
+  namespace: {{ $.Values.namespace }}
 spec:
   endpointSelector:
     matchLabels:
-      io.cilium.gateway/owning-gateway: {{ .Values.gateway.name }}
+      io.cilium.gateway/owning-gateway: {{ .name }}
   ingress:
     - fromCIDR:
-      {{- range .Values.networkPolicy.allowedCIDRs }}
-        - {{ . | quote}}
-      {{- end}}
-
+      {{- range .allowedCIDRs }}
+        - {{ . | quote }}
+      {{- end }}
+{{- end }}
+{{- end }}

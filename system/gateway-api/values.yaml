@@ -1,25 +1,24 @@
 domain: daxvo.tech
 namespace: gateway-system
 
-gateway:
-  name: shared-gateway
-  gatewayClassName: cilium
-  tls:
-    enabled: true
-    secretName: letsencrypt-prod
-    certName: shared-gateway-tls
-  allowedRouteNamespaces:   # ReferenceGrant
-    - apps
-    - argocd
-    - homepage
+gatewayClassName: cilium
 
-gatewayapi:
-  name: gateway-internal-only
+tls:
+  enabled: true
+  secretName: letsencrypt-prod
+  certName: shared-gateway-tls
 
-networkPolicy:
-  name: gateway-wireguard-only
-  allowedCIDRs:
-    - 10.10.0.0/10
+gateways:
+  - name: internal-gateway
+    public: false
+    allowedCIDRs:
+      - 10.10.0.0/10    # wireguard
+    allowedRouteNamespaces:
+      - argocd
+  - name: public-gateway
+    public: true
+    allowedRouteNamespaces:
+      - apps
 
 certificate:
   issuer:
