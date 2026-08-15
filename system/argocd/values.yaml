@@ -18,10 +18,10 @@ argo-cd:
     httproute:
       enabled: true
       parentRefs:
-        - name: shared-gateway
+        - name: internal-gateway
           namespace: gateway-system
           sectionName: http
-        - name: shared-gateway
+        - name: internal-gateway
           namespace: gateway-system
           sectionName: https
       hostnames:
@@ -53,7 +53,6 @@ argocd-apps:
             directories:
               - path: system/*
               - path: platform/*
-              - path: apps/*
       template:
         metadata:
           name: '{{path.basename}}'
@@ -66,7 +65,7 @@ argocd-apps:
             repoURL: *repoURL
             path: '{{path}}'
             targetRevision: *revision
-          syncPolicy:
+          syncPolicy: &syncPolicy
             automated:
               prune: true
               selfHeal: true
@@ -80,3 +79,24 @@ argocd-apps:
               - CreateNamespace=true
               - ApplyOutOfSyncOnly=true
               - ServerSideApply=true
+    apps:
+      namespace: argocd
+      generators:
+        - git:
+            repoURL: *repoURL
+            revision: *revision
+            directories:
+              - path: apps/*
+      template:
+        metadata:
+          name: '{{path.basename}}'
+        spec:
+          destination:
+            name: in-cluster
+            namespace: apps
+          project: default
+          source:
+            repoURL: *repoURL
+            path: '{{path}}'
+            targetRevision: *revision
+          syncPolicy: *syncPolicy
