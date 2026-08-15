@@ -16,17 +16,17 @@ app-template:
             - name: ADMIN_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: global-secrets
+                  name: external
                   key: miniflux.admin.username
             - name: ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: global-secrets
+                  name: external
                   key: miniflux.admin.password
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: global-secrets
+                  name: external
                   key: miniflux.postgres.password
             - name: DATABASE_URL
               value: postgres://miniflux:$(POSTGRES_PASSWORD)@miniflux-postgres:5432/miniflux?sslmode=disable
@@ -47,7 +47,7 @@ app-template:
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: global-secrets
+                  name: external
                   key: miniflux.postgres.password
       statefulset:
         volumeClaimTemplates:
