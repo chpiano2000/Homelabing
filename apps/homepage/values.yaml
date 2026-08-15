@@ -65,9 +65,9 @@ app-template:
         services.yaml: |
           - Development:
             - ArgoCD:
-                href: https://argocd.datvo.tech
+                href: https://argocd.daxvo.tech
                 description: Continuous deployment
-                icon: argocd.svg
+                icon: https://icon.icepanel.io/Technology/svg/Argo-CD.svg
         bookmarks.yaml: |
           - Homelab:
             - Repository:
