@@ -17,6 +17,7 @@ gateways:
       - argocd
   - name: public-gateway
     public: true
+    externalDNSTarget: homelab-tunnel.daxvo.tech
     allowedRouteNamespaces:
       - apps
 

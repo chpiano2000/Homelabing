@@ -5,6 +5,10 @@ kind: Gateway
 metadata:
   name: {{ .name }}
   namespace: {{ $.Values.namespace }}
+  {{- if and .public .externalDNSTarget }}
+  annotations:
+    external-dns.alpha.kubernetes.io/target: {{ .externalDNSTarget | quote }}
+  {{- end }}
 spec:
   gatewayClassName: {{ $.Values.gatewayClassName }}
   listeners:
