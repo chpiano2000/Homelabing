@@ -1,11 +1,11 @@
-{{- if .Values.tls.enabled }}
+{{- if .Values.gateway.tls.enabled }}
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: {{ .Values.tls.certName }}
+  name: {{ .Values.gateway.tls.certName }}
   namespace: {{ .Values.namespace }}
 spec:
-  secretName: {{ .Values.tls.secretName }}
+  secretName: {{ .Values.gateway.tls.secretName }}
   issuerRef:
     name: letsencrypt-prod
     kind: ClusterIssuer

@@ -18,10 +18,10 @@ argo-cd:
     httproute:
       enabled: true
       parentRefs:
-        - name: internal-gateway
+        - name: shared-gateway
           namespace: gateway-system
           sectionName: http
-        - name: internal-gateway
+        - name: shared-gateway
           namespace: gateway-system
           sectionName: https
       hostnames:

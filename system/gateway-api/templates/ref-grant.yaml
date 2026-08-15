@@ -1,13 +1,11 @@
-{{- range .Values.gateways }}
----
 apiVersion: gateway.networking.k8s.io/v1beta1
 kind: ReferenceGrant
 metadata:
-  name: allow-routes-to-{{ .name }}
-  namespace: {{ $.Values.namespace }}
+  name: allow-gateway-routes
+  namespace: {{ .Values.namespace }}
 spec:
   from:
-    {{- range .allowedRouteNamespaces }}
+    {{- range .Values.gateway.allowedRouteNamespaces }}
     - group: gateway.networking.k8s.io
       kind: HTTPRoute
       namespace: {{ . }}
@@ -15,5 +13,3 @@ spec:
   to:
     - group: gateway.networking.k8s.io
       kind: Gateway
-      name: {{ .name }}
-{{- end }}
