@@ -30,7 +30,7 @@ app-template:
                 type: PathPrefix
                 value: /
           backendRefs:
-            - name: main
+            - name: homepage
               port: 3000
   persistence:
     config:
