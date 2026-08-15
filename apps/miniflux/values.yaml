@@ -1,0 +1,91 @@
+app-template:
+  controllers:
+    main:
+      containers:
+        main:
+          image:
+            repository: ghcr.io/miniflux/miniflux
+            tag: 2.2.14
+          env:
+            - name: LISTEN_ADDR
+              value: 0.0.0.0:8080
+            - name: RUN_MIGRATIONS
+              value: "1"
+            - name: CREATE_ADMIN
+              value: "1"
+            - name: ADMIN_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: global-secrets
+                  key: miniflux.admin.username
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: global-secrets
+                  key: miniflux.admin.password
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: global-secrets
+                  key: miniflux.postgres.password
+            - name: DATABASE_URL
+              value: postgres://miniflux:$(POSTGRES_PASSWORD)@miniflux-postgres:5432/miniflux?sslmode=disable
+    postgres:
+      type: statefulset
+      containers:
+        main:
+          image:
+            repository: docker.io/library/postgres
+            tag: 17-alpine
+          env:
+            - name: POSTGRES_USER
+              value: miniflux
+            - name: POSTGRES_DB
+              value: miniflux
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: global-secrets
+                  key: miniflux.postgres.password
+      statefulset:
+        volumeClaimTemplates:
+          - name: data
+            accessMode: ReadWriteOnce
+            size: 5Gi
+            globalMounts:
+              - path: /var/lib/postgresql/data
+  service:
+    main:
+      controller: main
+      ports:
+        http:
+          port: 8080
+          protocol: HTTP
+    postgres:
+      controller: postgres
+      ports:
+        postgres:
+          port: 5432
+          protocol: TCP
+  route:
+    main:
+      enabled: true
+      hostnames:
+        - miniflux.daxvo.tech
+      parentRefs:
+        - name: internal-gateway
+          namespace: gateway-system
+          sectionName: http
+        - name: internal-gateway
+          namespace: gateway-system
+          sectionName: https
+      rules:
+        - matches:
+            - path:
+                type: PathPrefix
+                value: /
+          backendRefs:
+            - name: miniflux
+              port: 8080
