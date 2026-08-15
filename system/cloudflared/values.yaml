@@ -6,6 +6,7 @@ app-template:
         app:
           image:
             repository: docker.io/cloudflare/cloudflared
+            tag: latest
           args:
             - tunnel
             - --config
