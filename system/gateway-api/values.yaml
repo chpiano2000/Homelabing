@@ -1,23 +1,24 @@
 domain: daxvo.tech
 namespace: gateway-system
 
-gateway:
-  name: shared-gateway
-  gatewayClassName: cilium
-  tls:
-    enabled: true
-    secretName: letsencrypt-prod
-    certName: shared-gateway-tls
-  allowedRouteNamespaces:   # ReferenceGrant
-    - apps
-    - argocd
-    - homepage
+gatewayClassName: cilium
 
-networkPolicy:
-  name: gateway-wireguard-only
-  allowedCIDRs:
-    - 10.10.0.0/10   # WireGuard
-    - 10.42.0.0/16   # cluster pod CIDR (so cloudflared can reach the gateway)
+tls:
+  enabled: true
+  secretName: letsencrypt-prod
+  certName: shared-gateway-tls
+
+gateways:
+  - name: internal-gateway
+    public: false
+    allowedCIDRs:
+      - 10.10.0.0/10    # wireguard
+    allowedRouteNamespaces:
+      - argocd
+  - name: public-gateway
+    public: true
+    allowedRouteNamespaces:
+      - apps
 
 certificate:
   issuer:

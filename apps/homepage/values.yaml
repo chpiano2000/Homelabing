@@ -20,10 +20,10 @@ app-template:
       hostnames:
         - home.daxvo.tech
       parentRefs:
-        - name: shared-gateway
+        - name: public-gateway
           namespace: gateway-system
           sectionName: http
-        - name: shared-gateway
+        - name: public-gateway
           namespace: gateway-system
           sectionName: https
       rules:

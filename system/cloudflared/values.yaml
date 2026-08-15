@@ -41,8 +41,8 @@ app-template:
           metrics: 0.0.0.0:2000
           no-autoupdate: true
           ingress:
-            - hostname: home.daxvo.tech
-              service: https://cilium-gateway-shared-gateway.gateway-system.svc.cluster.local
+            - hostname: *.daxvo.tech
+              service: https://cilium-gateway-public-gateway.gateway-system.svc.cluster.local
               originRequest:
                 noTLSVerify: true
             - service: http_status:404

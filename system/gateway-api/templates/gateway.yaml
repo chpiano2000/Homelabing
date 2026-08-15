@@ -1,10 +1,12 @@
+{{- range .Values.gateways }}
+---
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  name: {{ .Values.gateway.name }}
-  namespace: {{ .Values.namespace }}
+  name: {{ .name }}
+  namespace: {{ $.Values.namespace }}
 spec:
-  gatewayClassName: {{ .Values.gateway.gatewayClassName }}
+  gatewayClassName: {{ $.Values.gatewayClassName }}
   listeners:
     - name: http
       protocol: HTTP
@@ -13,7 +15,7 @@ spec:
         namespaces:
           from: All
 
-    {{- if .Values.gateway.tls.enabled }}
+    {{- if $.Values.tls.enabled }}
     - name: https
       protocol: HTTPS
       port: 443
@@ -21,8 +23,9 @@ spec:
         mode: Terminate
         certificateRefs:
           - kind: Secret
-            name: {{ .Values.gateway.tls.secretName }}
+            name: {{ $.Values.tls.secretName }}
       allowedRoutes:
         namespaces:
           from: All
     {{- end }}
+{{- end }}
