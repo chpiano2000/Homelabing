@@ -16,4 +16,4 @@ external-dns:
   interval: 5m
   triggerLoopOnEvent: true
   serviceMonitor:
-    enabled: true
+    enabled: false
