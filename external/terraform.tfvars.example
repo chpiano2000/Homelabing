@@ -1,8 +1,15 @@
-# https://dash.cloudflare.com/profile/api-tokens
-# Create a token with permissions: 
-# - Zone.Zone: Read
-# - Zone.DNS: Edit
+# Create at https://dash.cloudflare.com/profile/api-tokens → Create Token → Custom token
+# Required permissions:
+#   Account | Cloudflare Tunnel | Edit
+#   Account | Account Settings  | Read
+#   Zone    | Zone              | Read
+#   Zone    | DNS               | Edit
+#   User    | API Tokens        | Edit    (needed because this TF creates per-service tokens)
+# Resources: All accounts, All zones (or scope to your account/zone)
 cloudflare_api_token = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+# https://dash.cloudflare.com — right sidebar of any zone overview page
+cloudflare_account_id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 # Optional: override the default kubeconfig path
 # kubeconfig_path = "../metal/ansible/kubeconfig.yaml"

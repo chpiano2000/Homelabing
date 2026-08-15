@@ -1,20 +1,29 @@
-resource "kubernetes_namespace" "cert_manager" {
+resource "kubernetes_namespace_v1" "cert_manager" {
   metadata {
     name = "cert-manager"
   }
 }
 
-resource "kubernetes_secret" "cert_manager_token" {
+resource "kubernetes_namespace_v1" "external_dns" {
   metadata {
-    name      = "cloudflare-api-token"
-    namespace = kubernetes_namespace.cert_manager.metadata[0].name
-
-    annotations = {
-      "app.kubernetes.io/managed-by" = "Terraform"
-    }
+    name = "external-dns"
   }
+}
 
-  data = {
-    "api-token" = var.cloudflare_api_token
+resource "kubernetes_namespace_v1" "cloudflared" {
+  metadata {
+    name = "cloudflared"
   }
+}
+
+module "cloudflare" {
+  source = "./modules/cloudflare"
+
+  cloudflare_account_id = var.cloudflare_account_id
+
+  depends_on = [
+    kubernetes_namespace_v1.cert_manager,
+    kubernetes_namespace_v1.external_dns,
+    kubernetes_namespace_v1.cloudflared,
+  ]
 }
