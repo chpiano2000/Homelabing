@@ -53,6 +53,7 @@ argocd-apps:
             directories:
               - path: system/*
               - path: platform/*
+              - path: apps/*
       template:
         metadata:
           name: '{{path.basename}}'
@@ -79,24 +80,3 @@ argocd-apps:
               - CreateNamespace=true
               - ApplyOutOfSyncOnly=true
               - ServerSideApply=true
-    apps:
-      namespace: argocd
-      generators:
-        - git:
-            repoURL: *repoURL
-            revision: *revision
-            directories:
-              - path: apps/*
-      template:
-        metadata:
-          name: '{{path.basename}}'
-        spec:
-          destination:
-            name: in-cluster
-            namespace: apps
-          project: default
-          source:
-            repoURL: *repoURL
-            path: '{{path}}'
-            targetRevision: *revision
-          syncPolicy: *syncPolicy
